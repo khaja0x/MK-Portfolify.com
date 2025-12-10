@@ -1,73 +1,143 @@
-# Welcome to your Lovable project
 
-## Project info
+⭐ Developer Portfolio — Full Stack (React + Node + Supabase)
 
-**URL**: https://lovable.dev/projects/c1c26a57-8d25-43af-a017-fbc05087bb87
+A modern and responsive full-stack developer portfolio built with React, Vite, TailwindCSS, ShadCN UI, and a Node + Supabase backend.
+Includes an Admin Dashboard to manage portfolio content (projects, skills, hero section, messages, and more).
 
-## How can I edit this code?
+🚀 Features
+🎨 Frontend (React + Vite)
 
-There are several ways of editing your application.
+Modern UI built with TailwindCSS + ShadCN components
 
-**Use Lovable**
+Fully responsive design
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/c1c26a57-8d25-43af-a017-fbc05087bb87) and start prompting.
+Smooth animations
 
-Changes made via Lovable will be committed automatically to this repo.
+Sections included:
 
-**Use your preferred IDE**
+Hero section
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+About
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Skills
 
-Follow these steps:
+Projects
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+Experience
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Contact
 
-# Step 3: Install the necessary dependencies.
-npm i
+Social links
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+Reusable UI components
 
-**Edit a file directly in GitHub**
+Chat widget button
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Clean routing with React Router
 
-**Use GitHub Codespaces**
+🛠 Backend (Node + Supabase)
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Supabase PostgreSQL database
 
-## What technologies are used for this project?
+Secure RLS (Row Level Security) policies
 
-This project is built with:
+CRUD API for:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Projects
 
-## How can I deploy this project?
+Experience
 
-Simply open [Lovable](https://lovable.dev/projects/c1c26a57-8d25-43af-a017-fbc05087bb87) and click on Share -> Publish.
+Skills
 
-## Can I connect a custom domain to my Lovable project?
+About section
 
-Yes, you can!
+Contact form messages
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+Authentication for Admin Dashboard
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Image uploads via Supabase Storage
+
+Server components:
+
+Express API
+
+Supabase client
+
+Middleware for auth
+
+Error handling
+
+🔐 Admin Dashboard
+
+Login system for admin
+
+Add / update:
+
+Projects
+
+Skills
+
+Experience
+
+About section
+
+Social links
+
+Upload project screenshots
+
+Read and manage user messages
+
+Clean UI built with ShadCN
+
+📁 Project Structure
+project/
+│
+├── src/                     # Frontend (React + Vite)
+│   ├── components/
+│   ├── pages/
+│   ├── hooks/
+│   ├── context/
+│   └── App.jsx
+│
+├── Server/                  # Backend (Node + Supabase)
+│   ├── controllers/
+│   ├── routes/
+│   ├── middleware/
+│   ├── utils/
+│   ├── index.js
+│   └── package.json
+│
+├── migrations/              # SQL migration scripts
+├── supabase/                # SQL policies, schema, RLS files
+├── public/
+│
+├── .env                     # Environment variables (ignored)
+├── .gitignore
+├── README.md
+├── package.json
+└── vite.config.js
+
+🔧 Technologies Used
+Frontend
+
+React
+
+Vite
+
+TailwindCSS
+
+ShadCN/UI
+
+React Router
+
+Lucide Icons
+
+Backend
+
+Node.js
+
+Express
+
+Supabase (Database + Auth + Storage)
+
+PostgreSQL
