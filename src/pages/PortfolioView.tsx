@@ -8,22 +8,28 @@ import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 
 interface PortfolioViewProps {
-    tenantId: string;
+  /** UUID from tenants.id */
+  tenantId: string;
 }
 
 const PortfolioView = ({ tenantId }: PortfolioViewProps) => {
-    return (
-        <div className="min-h-screen">
-            <Navigation tenantId={tenantId} />
-            <Hero tenantId={tenantId} />
-            <About tenantId={tenantId} />
-            <Skills tenantId={tenantId} />
-            <Projects tenantId={tenantId} />
-            <Experience tenantId={tenantId} />
-            <Contact tenantId={tenantId} />
-            <Footer tenantId={tenantId} />
-        </div>
-    );
+  if (!tenantId) {
+    console.error("PortfolioView rendered without tenantId (UUID)");
+    return null;
+  }
+
+  return (
+    <div className="min-h-screen">
+      <Navigation tenantId={tenantId} />
+      <Hero tenantId={tenantId} />
+      <About tenantId={tenantId} />
+      <Skills tenantId={tenantId} />
+      <Projects tenantId={tenantId} />
+      <Experience tenantId={tenantId} />
+      <Contact tenantId={tenantId} />
+      <Footer tenantId={tenantId} />
+    </div>
+  );
 };
 
 export default PortfolioView;
