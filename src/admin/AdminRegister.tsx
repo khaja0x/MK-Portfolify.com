@@ -39,7 +39,8 @@ const AdminRegister = () => {
 
     // Check tenant ID availability
     useEffect(() => {
-        const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:5000";
+        const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+        const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
         const checkAvailability = async () => {
             if (!formData.tenantId || formData.tenantId.length < 3) {
@@ -50,7 +51,13 @@ const AdminRegister = () => {
             setCheckingAvailability(true);
             try {
                 const response = await fetch(
-                    `${BASE_URL}/api/tenants/check-availability/${formData.tenantId}`
+                    `${SUPABASE_URL}/functions/v1/tenant-lookup/check-availability/${formData.tenantId}`,
+                    {
+                        headers: {
+                            "apikey": SUPABASE_ANON_KEY,
+                            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+                        }
+                    }
                 );
 
                 if (!response.ok) {
@@ -74,7 +81,7 @@ const AdminRegister = () => {
                 setTenantIdAvailable(false);
                 toast({
                     title: "Connection Error",
-                    description: "Unable to check availability. Please ensure the server is running.",
+                    description: "Unable to check availability. Please ensure the Supabase function is deployed.",
                     variant: "destructive",
                 });
             } finally {
@@ -88,7 +95,8 @@ const AdminRegister = () => {
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
-        const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:5000";
+        const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+        const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
         if (formData.password !== formData.confirmPassword) {
             toast({
@@ -111,9 +119,13 @@ const AdminRegister = () => {
         setLoading(true);
 
         try {
-            const response = await fetch(`${BASE_URL}/api/tenants/register`, {
+            const response = await fetch(`${SUPABASE_URL}/functions/v1/tenant-register`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "apikey": SUPABASE_ANON_KEY,
+                    "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+                },
                 body: JSON.stringify({
                     tenantName: formData.userName,
                     tenantId: formData.tenantId,
@@ -130,15 +142,15 @@ const AdminRegister = () => {
 
             // Store session if provided
             if (data.session) {
-                localStorage.setItem("supabase.auth.token", JSON.stringify(data.session));
+                console.log("Registration successful, session created.");
             }
 
             toast({
-                title: "Success!",
-                description: "Your account has been created successfully.",
+                title: "Register Success!",
+                description: `Portfolio for ${formData.userName} created at /portfolio/${data.tenant.tenantId}`,
             });
 
-            // Redirect to admin dashboard
+            // Redirect to admin dashboard using the slug from the server response
             navigate(`/admin/${data.tenant.tenantId}`);
 
         } catch (error: any) {
