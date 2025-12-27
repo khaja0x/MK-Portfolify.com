@@ -136,14 +136,36 @@ const AboutEditor = () => {
             if (error.code === '42501') {
                 toast({
                     title: "Permission Denied",
-                    description: "You do not have permission to edit this tenant.",
-                    variant: "destructive"
+                    description: "You don't have permission to edit this tenant.",
+                    variant: "destructive",
+                    action: (
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={async () => {
+                                try {
+                                    const slug = window.location.pathname.split('/admin/')[1]?.split('/')[0];
+                                    if (!slug) throw new Error("Could not determine tenant slug");
+                                    const { error: fnError } = await supabase.functions.invoke('add-admin-user', {
+                                        body: { tenant_slug: slug, role: 'owner' }
+                                    });
+                                    if (fnError) throw fnError;
+                                    toast({ title: "Success", description: "Permissions fixed! Try saving again." });
+                                } catch (err: any) {
+                                    toast({ title: "Auto-Fix Failed", description: err.message, variant: "destructive" });
+                                }
+                            }}
+                        >
+                            Fix Now
+                        </Button>
+                    )
                 });
             } else {
                 toast({ title: "Error", description: error.message, variant: "destructive" });
             }
         } else {
             toast({ title: "Success", description: "About section updated!" });
+            fetchAbout();
         }
         setLoading(false);
     };
