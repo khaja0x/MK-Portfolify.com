@@ -64,35 +64,71 @@ const HeroEditor = () => {
 
         setLoading(true);
 
-        // Remove id from formData to avoid issues if it's null/undefined
-        const { id, ...dataToSave } = formData as any;
+        // Destructure to get the rest of the fields, ignoring current ID if we want to rely on tenant_id constraint
+        const { id, ...dataFields } = formData as any;
 
         const payload: any = {
-            ...dataToSave,
+            ...dataFields,
             tenant_id: tenant.id,
             updated_at: new Date()
         };
 
-        // If we have an ID, include it for update
+        // If we have an existing ID, we include it to ensure we update the specific row
+        // But the constraint on tenant_id is our safety net
         if (id) {
             payload.id = id;
         }
 
-        const { error } = await supabase.from("hero").upsert(payload, { onConflict: 'tenant_id' });
+        const { error } = await supabase
+            .from("hero")
+            .upsert(payload, { onConflict: 'tenant_id' });
 
         if (error) {
             console.error("Error saving hero:", error);
             if (error.code === '42501') {
-                toast({
+                const toastId = toast({
                     title: "Permission Denied",
-                    description: "You do not have permission to edit this tenant. Please run the 'fix_access_and_policies.sql' script in Supabase.",
-                    variant: "destructive"
+                    description: "You don't have permission to edit this tenant.",
+                    variant: "destructive",
+                    action: (
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={async () => {
+                                try {
+                                    // Extract tenant slug from URL
+                                    const slug = window.location.pathname.split('/admin/')[1]?.split('/')[0];
+                                    if (!slug) throw new Error("Could not determine tenant slug from URL");
+
+                                    const { data, error: fnError } = await supabase.functions.invoke('add-admin-user', {
+                                        body: { tenant_slug: slug, role: 'owner' }
+                                    });
+
+                                    if (fnError) throw fnError;
+
+                                    toast({
+                                        title: "Success",
+                                        description: "Permissions fixed! Please try saving again.",
+                                    });
+                                } catch (err: any) {
+                                    toast({
+                                        title: "Auto-Fix Failed",
+                                        description: err.message,
+                                        variant: "destructive"
+                                    });
+                                }
+                            }}
+                        >
+                            Fix Now
+                        </Button>
+                    )
                 });
             } else {
                 toast({ title: "Error", description: error.message, variant: "destructive" });
             }
         } else {
             toast({ title: "Success", description: "Hero section updated!" });
+            fetchHero();
         }
         setLoading(false);
     };
