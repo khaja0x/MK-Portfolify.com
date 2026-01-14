@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import TenantPortfolio from "./pages/TenantPortfolio";
 import ProtectedRoute from "./components/ProtectedRoute";
+import SecurityHardenDisplay from "./components/SecurityHardenDisplay";
 
 // Admin Components
 import AdminLogin from "./admin/Login";
@@ -21,6 +22,7 @@ import ProjectsEditor from "./admin/editors/ProjectsEditor";
 import ExperienceEditor from "./admin/editors/ExperienceEditor";
 import ContactEditor from "./admin/editors/ContactEditor";
 import Messages from "./admin/editors/Messages";
+import TemplateEditor from "./admin/editors/TemplateEditor";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +30,7 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <TenantProvider>
+        <SecurityHardenDisplay />
         <Toaster />
         <Sonner />
         <BrowserRouter
@@ -63,6 +66,7 @@ const App = () => (
                 <Route path="experience" element={<ExperienceEditor />} />
                 <Route path="contact" element={<ContactEditor />} />
                 <Route path="messages" element={<Messages />} />
+                <Route path="templates" element={<TemplateEditor />} />
               </Route>
             </Route>
 

@@ -1,8 +1,8 @@
-
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Github, Linkedin, Mail, Twitter, ChevronDown } from "lucide-react";
+import { ArrowRight, Github, Linkedin, Mail, Twitter, ChevronDown, Rocket, FileText, Send } from "lucide-react";
+import { motion } from "framer-motion";
 
 const Hero = ({ tenantId }: { tenantId?: string }) => {
   const [heroData, setHeroData] = useState({
@@ -77,19 +77,15 @@ const Hero = ({ tenantId }: { tenantId?: string }) => {
 
   if (isLoading) {
     return (
-      <section id="hero" className="min-h-screen flex items-center justify-center px-4 py-20 pt-24 relative overflow-hidden bg-background">
-        <div className="absolute inset-0 bg-grid-pattern opacity-[0.2]" />
-        <div className="container max-w-6xl mx-auto">
-          <div className="text-center space-y-8 animate-pulse">
-            <div className="h-6 bg-muted rounded w-32 mx-auto"></div>
-            <div className="h-20 bg-muted rounded w-3/4 mx-auto"></div>
-            <div className="h-8 bg-muted rounded w-2/3 mx-auto"></div>
-            <div className="h-6 bg-muted rounded w-1/2 mx-auto"></div>
-            <div className="flex gap-4 justify-center pt-8">
-              <div className="h-12 w-12 bg-muted rounded-full"></div>
-              <div className="h-12 w-12 bg-muted rounded-full"></div>
-              <div className="h-12 w-12 bg-muted rounded-full"></div>
-            </div>
+      <section className="min-h-screen flex items-center justify-center bg-slate-950 px-6 py-20 pt-24 overflow-hidden">
+        <div className="container max-w-6xl mx-auto text-center space-y-8 animate-pulse">
+          <div className="h-4 w-32 bg-slate-800 rounded-full mx-auto" />
+          <div className="h-24 w-3/4 bg-slate-800 rounded-[2.5rem] mx-auto" />
+          <div className="h-10 w-2/3 bg-slate-800 rounded-full mx-auto" />
+          <div className="h-16 w-1/2 bg-slate-800/50 rounded-2xl mx-auto" />
+          <div className="flex gap-4 justify-center pt-8">
+            <div className="h-14 w-40 bg-slate-800 rounded-2xl" />
+            <div className="h-14 w-40 bg-slate-800 rounded-2xl" />
           </div>
         </div>
       </section>
@@ -97,127 +93,125 @@ const Hero = ({ tenantId }: { tenantId?: string }) => {
   }
 
   return (
-    <section id="hero" className="min-h-screen flex items-center justify-center px-4 py-20 pt-24 relative overflow-hidden bg-background">
-      {/* Background Effects */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-[0.3] pointer-events-none" />
-      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-accent/10 rounded-full blur-[100px] pointer-events-none" />
+    <section id="hero" className="min-h-screen flex items-center justify-center px-6 py-20 pt-32 relative overflow-hidden bg-background">
+      {/* Background Decorative Elements */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <div className="absolute top-[-10%] left-[-5%] w-[40%] h-[40%] bg-sky-500/10 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-5%] w-[40%] h-[40%] bg-indigo-500/10 rounded-full blur-[120px] animate-pulse delay-700" />
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')] opacity-[0.03]" />
+      </div>
 
-      <div className="container max-w-5xl mx-auto relative z-10">
-        <div className="text-center space-y-8 animate-fade-in">
-          {/* Greeting */}
-          <div className="inline-block animate-slide-up" style={{ animationDelay: "0.1s" }}>
-            <span className="px-4 py-1.5 rounded-full bg-secondary/50 border border-border/50 text-sm font-medium text-primary backdrop-blur-sm">
-              Hi there, I'm
+      <div className="container max-w-6xl mx-auto relative z-10 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="space-y-10"
+        >
+          {/* Badge Greeting */}
+          <div className="inline-flex items-center gap-2.5 px-6 py-2.5 rounded-full bg-slate-900/80 border border-slate-800 text-sm font-bold tracking-widest text-sky-400 uppercase backdrop-blur-md shadow-2xl">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-sky-500" />
             </span>
+            Discovery Mode Active
           </div>
 
-          {/* Name */}
-          <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tight animate-slide-up" style={{ animationDelay: "0.2s" }}>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground via-foreground/80 to-foreground/50">
-              {heroData.name}
-            </span>
-          </h1>
+          {/* Name & Title */}
+          <div className="space-y-6">
+            <h1 className="text-7xl md:text-9xl font-black tracking-tight text-foreground leading-none">
+              <span className="inline-block hover:scale-[1.02] transition-transform cursor-default">
+                {heroData.name}
+              </span>
+            </h1>
+            <h2 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-slate-200 via-slate-400 to-slate-500 bg-clip-text text-transparent max-w-4xl mx-auto leading-tight italic">
+              {heroData.title}
+            </h2>
+          </div>
 
-          {/* Tagline */}
-          <p className="text-2xl md:text-3xl lg:text-4xl text-muted-foreground max-w-3xl mx-auto font-light leading-tight animate-slide-up" style={{ animationDelay: "0.3s" }}>
-            {heroData.title}
-          </p>
-
-          {/* Description */}
-          <p className="text-lg text-muted-foreground/80 max-w-2xl mx-auto leading-relaxed animate-slide-up" style={{ animationDelay: "0.4s" }}>
+          {/* Subtitle */}
+          <p className="text-xl md:text-2xl text-slate-400 max-w-3xl mx-auto leading-relaxed font-medium">
             {heroData.subtitle}
           </p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8 animate-slide-up" style={{ animationDelay: "0.5s" }}>
+          {/* CTA Group */}
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center pt-10">
             <Button
               size="lg"
-              className="h-14 px-8 rounded-full text-lg bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all duration-300 hover:-translate-y-1 group"
+              className="h-16 px-10 rounded-[1.5rem] bg-sky-500 hover:bg-sky-600 text-white text-xl font-black shadow-2xl shadow-sky-500/30 group transition-all hover:-translate-y-1 active:scale-95"
               onClick={() => document.getElementById(heroData.cta_link || 'projects')?.scrollIntoView({ behavior: 'smooth' })}
             >
               {heroData.cta_text}
-              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-1.5 transition-transform" />
             </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="h-14 px-8 rounded-full text-lg border-2 hover:bg-secondary/50 transition-all duration-300 hover:-translate-y-1"
-              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-            >
-              Get In Touch
-            </Button>
-            {heroData.resume_url && (
+
+            <div className="flex gap-4">
+              {heroData.resume_url && (
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="h-16 px-8 rounded-[1.5rem] border-slate-700 bg-slate-900/50 text-white text-lg font-bold hover:bg-slate-800 hover:border-slate-600 transition-all hover:-translate-y-1 active:scale-95"
+                  asChild
+                >
+                  <a href={heroData.resume_url} target="_blank" rel="noopener noreferrer">
+                    <FileText className="mr-2 h-5 w-5" /> Resume
+                  </a>
+                </Button>
+              )}
               <Button
                 size="lg"
-                variant="ghost"
-                className="h-14 px-8 rounded-full text-lg hover:bg-secondary/50 transition-all duration-300"
-                asChild
+                variant="outline"
+                className="h-16 px-8 rounded-[1.5rem] border-border bg-card text-foreground text-lg font-bold hover:bg-accent hover:border-slate-600 transition-all hover:-translate-y-1 active:scale-95"
+                onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
               >
-                <a
-                  href={heroData.resume_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  download
-                >
-                  Resume
-                </a>
+                <Send className="mr-2 h-5 w-5" /> Let's Chat
               </Button>
-            )}
+            </div>
           </div>
 
-          {/* Social Links */}
-          <div className="flex gap-6 justify-center pt-12 animate-slide-up" style={{ animationDelay: "0.6s" }}>
-            {heroData.social_links.github && (
-              <a
-                href={heroData.social_links.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-colors transform hover:scale-110 duration-300"
-              >
-                <Github className="h-6 w-6" />
-              </a>
-            )}
-            {heroData.social_links.linkedin && (
-              <a
-                href={heroData.social_links.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-[#0077b5] transition-colors transform hover:scale-110 duration-300"
-              >
-                <Linkedin className="h-6 w-6" />
-              </a>
-            )}
-            {heroData.social_links.twitter && (
-              <a
-                href={heroData.social_links.twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-colors transform hover:scale-110 duration-300"
-              >
-                <Twitter className="h-6 w-6" />
-              </a>
-            )}
-            {heroData.social_links.email && (
-              <a
-                href={`mailto:${heroData.social_links.email}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-colors transform hover:scale-110 duration-300"
-              >
-                <Mail className="h-6 w-6" />
-              </a>
-            )}
+          {/* Social Icons Bar */}
+          <div className="flex items-center justify-center gap-8 pt-16">
+            <div className="h-px w-12 bg-slate-800 md:block hidden" />
+            <div className="flex gap-8">
+              {heroData.social_links.github && (
+                <a href={heroData.social_links.github} target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-white transition-all transform hover:scale-125 duration-300">
+                  <Github size={28} />
+                </a>
+              )}
+              {heroData.social_links.linkedin && (
+                <a href={heroData.social_links.linkedin} target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-[#0077b5] transition-all transform hover:scale-125 duration-300">
+                  <Linkedin size={28} />
+                </a>
+              )}
+              {heroData.social_links.twitter && (
+                <a href={heroData.social_links.twitter} target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-[#1da1f2] transition-all transform hover:scale-125 duration-300">
+                  <Twitter size={28} />
+                </a>
+              )}
+              {heroData.social_links.email && (
+                <a href={`mailto:${heroData.social_links.email}`} className="text-slate-500 hover:text-sky-400 transition-all transform hover:scale-125 duration-300">
+                  <Mail size={28} />
+                </a>
+              )}
+            </div>
+            <div className="h-px w-12 bg-slate-800 md:block hidden" />
           </div>
-        </div>
+        </motion.div>
       </div>
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce cursor-pointer" onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}>
-        <div className="flex flex-col items-center gap-2 text-muted-foreground/50 hover:text-muted-foreground transition-colors">
-          <span className="text-xs font-medium uppercase tracking-widest">Scroll</span>
-          <ChevronDown className="h-4 w-4" />
+      {/* Modern Mouse Scroll Indicator */}
+      <div
+        className="absolute bottom-12 left-1/2 -translate-x-1/2 cursor-pointer flex flex-col items-center gap-4 group"
+        onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
+      >
+        <div className="w-8 h-12 rounded-full border-2 border-slate-700 p-2 flex justify-center">
+          <motion.div
+            animate={{ y: [0, 12, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            className="w-1.5 h-3 bg-sky-500 rounded-full"
+          />
         </div>
+        <span className="text-[10px] font-black uppercase text-slate-500 tracking-[0.3em] group-hover:text-slate-300 transition-colors">Navigation</span>
       </div>
     </section>
   );

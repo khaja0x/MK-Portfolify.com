@@ -1,29 +1,35 @@
-import Navigation from "@/components/Navigation";
-import Hero from "@/components/Hero";
-import About from "@/components/About";
-import Skills from "@/components/Skills";
-import Projects from "@/components/Projects";
-import Experience from "@/components/Experience";
-import Contact from "@/components/Contact";
-import Footer from "@/components/Footer";
+import ModernTemplate from "@/templates/ModernTemplate";
+import MinimalTemplate from "@/templates/MinimalTemplate";
+import CreativeTemplate from "@/templates/CreativeTemplate";
+import FuturisticTemplate from "@/templates/FuturisticTemplate";
 
 interface PortfolioViewProps {
-    tenantId: string;
+  /** UUID from tenants.id */
+  tenantId: string;
+  /** Template identifier from theme_config */
+  templateId?: string;
 }
 
-const PortfolioView = ({ tenantId }: PortfolioViewProps) => {
-    return (
-        <div className="min-h-screen">
-            <Navigation tenantId={tenantId} />
-            <Hero tenantId={tenantId} />
-            <About tenantId={tenantId} />
-            <Skills tenantId={tenantId} />
-            <Projects tenantId={tenantId} />
-            <Experience tenantId={tenantId} />
-            <Contact tenantId={tenantId} />
-            <Footer tenantId={tenantId} />
-        </div>
-    );
+const PortfolioView = ({ tenantId, templateId }: PortfolioViewProps) => {
+  if (!tenantId) {
+    console.error("PortfolioView rendered without tenantId (UUID)");
+    return null;
+  }
+
+  // Handle template selection
+  switch (templateId) {
+    case "minimal":
+      return <MinimalTemplate tenantId={tenantId} />;
+    case "creative":
+      return <CreativeTemplate tenantId={tenantId} />;
+    case "futuristic":
+      return <FuturisticTemplate tenantId={tenantId} />;
+    case "modern":
+    default:
+      return <ModernTemplate tenantId={tenantId} />;
+  }
 };
 
+
 export default PortfolioView;
+
