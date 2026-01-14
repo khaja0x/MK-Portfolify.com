@@ -1,11 +1,8 @@
-
-
-
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User } from "lucide-react";
+import { Menu, X, User, Zap, Sparkles } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Navigation = ({ tenantId }: { tenantId?: string }) => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -14,16 +11,14 @@ const Navigation = ({ tenantId }: { tenantId?: string }) => {
   const [logoInitials, setLogoInitials] = useState("MK");
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Fetch profile data from Supabase
   useEffect(() => {
     fetchProfileData();
 
-    // Subscribe to real-time changes
     const channel = supabase
       .channel("about-changes")
       .on("postgres_changes", { event: "*", schema: "public", table: "about" }, () => {
@@ -46,7 +41,6 @@ const Navigation = ({ tenantId }: { tenantId?: string }) => {
     const { data } = await query.maybeSingle();
     if (data) {
       setProfileImage(data.profile_image_url || "");
-      // Extract initials from title if available
       if (data.title) {
         const words = data.title.split(" ");
         const initials = words.map(w => w[0]).join("").substring(0, 2).toUpperCase();
@@ -58,105 +52,139 @@ const Navigation = ({ tenantId }: { tenantId?: string }) => {
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
+      const offset = 80;
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = el.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
       setIsMobileMenuOpen(false);
     }
   };
 
   const navItems = [
-    { id: "about", label: "About" },
+    { id: "about", label: "Identity" },
     { id: "skills", label: "Skills" },
-    { id: "projects", label: "Projects" },
-    { id: "experience", label: "Experience" },
-    { id: "contact", label: "Contact" },
+    { id: "projects", label: "Work" },
+    { id: "experience", label: "Journey" },
+    { id: "contact", label: "Connect" },
   ];
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
-        ? "bg-background/80 backdrop-blur-lg border-b border-border shadow-lg"
-        : "bg-transparent"
+      className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${isScrolled
+          ? "py-4"
+          : "py-8"
         }`}
     >
-      <div className="container max-w-6xl mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+      <div className="container max-w-7xl mx-auto px-6">
+        <div className={`
+          flex items-center justify-between px-6 h-20 rounded-[2rem] transition-all duration-500
+          ${isScrolled
+            ? "bg-slate-950/80 backdrop-blur-2xl border border-slate-800/50 shadow-3xl"
+            : "bg-transparent border border-transparent"}
+        `}>
 
-          {/* Dynamic Logo */}
+          {/* Dynamic Logo / Brand */}
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="flex items-center gap-2 group"
+            className="flex items-center gap-4 group hover:scale-105 transition-transform"
           >
-            {profileImage ? (
-              <img
-                src={profileImage}
-                alt="Logo"
-                className="h-10 w-10 rounded-full object-cover border-2 border-primary/20 transition-all duration-300 group-hover:scale-110 group-hover:border-primary/40 group-hover:shadow-lg"
-                onError={(e) => {
-                  // Fallback if image fails to load
-                  (e.target as HTMLImageElement).style.display = 'none';
-                }}
-              />
-            ) : null}
-            {!profileImage && (
-              <div className="h-10 w-10 rounded-full bg-primary/10 border-2 border-primary/20 flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:border-primary/40 group-hover:shadow-lg">
-                <span className="text-sm font-bold text-primary">{logoInitials}</span>
-              </div>
-            )}
+            <div className="relative">
+              {profileImage ? (
+                <img
+                  src={profileImage}
+                  alt="Logo"
+                  className="h-12 w-12 rounded-2xl object-cover border-2 border-slate-800 group-hover:border-sky-500/50 transition-all shadow-xl"
+                />
+              ) : (
+                <div className="h-12 w-12 rounded-2xl bg-slate-900 border-2 border-slate-800 flex items-center justify-center text-sky-400 font-black shadow-xl">
+                  {logoInitials}
+                </div>
+              )}
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-slate-950 animate-pulse" />
+            </div>
+            <div className="text-left leading-tight hidden sm:block">
+              <div className="text-white font-black tracking-tighter uppercase text-sm">System Status</div>
+              <div className="text-sky-400 font-bold text-xs uppercase tracking-widest">Active</div>
+            </div>
           </button>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className="text-sm font-medium text-foreground hover:text-primary transition-colors relative group"
-              >
-                {item.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
-              </button>
-            ))}
+          {/* Desktop Navigation Link Group */}
+          <div className="hidden lg:flex items-center gap-2">
+            <div className="flex items-center p-1.5 bg-slate-900/50 rounded-2xl border border-slate-800/50 mr-2">
+              {navItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className="px-6 py-2.5 text-sm font-bold text-slate-400 hover:text-white transition-all rounded-xl hover:bg-slate-800 relative group"
+                >
+                  {item.label}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0 }}
+                    whileHover={{ opacity: 1, scale: 1 }}
+                    className="absolute -top-1 -right-1"
+                  >
+                    <Sparkles size={8} className="text-sky-500" />
+                  </motion.div>
+                </button>
+              ))}
+            </div>
+
             <Button
               onClick={() => scrollToSection("contact")}
-              size="sm"
-              className="bg-gradient-primary shadow-glow"
+              size="lg"
+              className="h-14 px-8 rounded-2xl bg-sky-500 hover:bg-sky-600 text-white font-black shadow-lg shadow-sky-500/20 group overflow-hidden"
             >
-              Hire Me
+              Contact Me
+              <Zap size={16} fill="currentColor" className="ml-2 group-hover:scale-125 transition-transform" />
             </Button>
           </div>
 
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 hover:bg-secondary rounded-lg transition-colors"
+            className="lg:hidden w-12 h-12 flex items-center justify-center bg-slate-900 border border-slate-800 rounded-2xl text-white hover:bg-slate-800 transition-colors"
           >
-            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
 
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden py-4 animate-fade-in">
-            <div className="flex flex-col gap-4">
-              {navItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  className="text-left px-4 py-2 hover:bg-secondary rounded-lg transition-colors"
+        {/* Mobile Menu Overlay */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="lg:hidden mt-4 p-6 bg-slate-950/95 backdrop-blur-3xl border border-slate-800 rounded-[2.5rem] shadow-3xl"
+            >
+              <div className="flex flex-col gap-3">
+                {navItems.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => scrollToSection(item.id)}
+                    className="text-left px-6 py-4 text-lg font-bold text-slate-300 hover:text-white hover:bg-slate-900 rounded-2xl transition-all border border-transparent hover:border-slate-800"
+                  >
+                    {item.label}
+                  </button>
+                ))}
+                <div className="h-px bg-slate-800 my-2" />
+                <Button
+                  onClick={() => scrollToSection("contact")}
+                  size="lg"
+                  className="h-16 rounded-2xl bg-sky-400 text-slate-950 font-black"
                 >
-                  {item.label}
-                </button>
-              ))}
-              <Button
-                onClick={() => scrollToSection("contact")}
-                size="sm"
-                className="bg-gradient-primary shadow-glow"
-              >
-                Hire Me
-              </Button>
-            </div>
-          </div>
-        )}
+                  Launch Collaboration
+                </Button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </nav>
   );

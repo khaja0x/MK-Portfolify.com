@@ -32,10 +32,16 @@ const Admin = () => {
         fetchMessages();
     }, []);
 
-    const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:5000";
+    const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+    const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
     const fetchMessages = async () => {
-        const res = await fetch(`${BASE_URL}/api/contact`);
+        const res = await fetch(`${SUPABASE_URL}/functions/v1/contact-handler`, {
+            headers: {
+                "apikey": SUPABASE_ANON_KEY,
+                "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+            }
+        });
         const json = await res.json();
         if (json.success) {
             setMessages(json.data);
@@ -43,9 +49,13 @@ const Admin = () => {
     };
 
     const toggleRead = async (id: string, currentStatus: boolean) => {
-        await fetch(`${BASE_URL}/api/contact/${id}`, {
+        await fetch(`${SUPABASE_URL}/functions/v1/contact-handler/${id}`, {
             method: "PATCH",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                "apikey": SUPABASE_ANON_KEY,
+                "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+            },
             body: JSON.stringify({ is_read: !currentStatus }),
         });
         fetchMessages();
@@ -53,7 +63,13 @@ const Admin = () => {
 
     const deleteMessage = async (id: string) => {
         if (!confirm("Are you sure?")) return;
-        await fetch(`${BASE_URL}/api/contact/${id}`, { method: "DELETE" });
+        await fetch(`${SUPABASE_URL}/functions/v1/contact-handler/${id}`, {
+            method: "DELETE",
+            headers: {
+                "apikey": SUPABASE_ANON_KEY,
+                "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+            }
+        });
         fetchMessages();
     };
 
